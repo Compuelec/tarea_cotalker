@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand navbar-light bg-light">
+    <div class="nav navbar-nav">
+        <a class="nav-item nav-link active" routerLink="lista-datos">Lista de Datos<span class="visually-hidden">(current)</span></a>
+        <a class="nav-item nav-link" href="#">Home</a>
+    </div>
+</nav>
+<div class="container">
+  <br>
+      <input class="form-control" name="filterDatos" id="myInput" type="text" placeholder="Buscar..">
+  <br>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>CompanyId</th>
+        <th>UserId</th>
+        <th>Method</th>
+        <th>Tiempo</th>
+        <th>Fecha</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody id="dataTable">
+      <tr *ngFor="let item of DatosLista">
+        <td>{{item['CompanyId']}}</td>
+        <td>{{item['UserId']}}</td>
+        <td>{{item['Method']}}</td>
+        <td>{{item['Tiempo']}}</td>
+        <td>{{item['Fecha']}}</td>
+        <td>{{item['Source']}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
