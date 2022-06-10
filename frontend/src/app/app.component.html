@@ -8,6 +8,68 @@
   <br>
       <input class="form-control" name="filterDatos" id="myInput" type="text" placeholder="Buscar..">
   <br>
+  <div class="row">
+
+    <div class="form-group col-2">
+      <label for="sel1">Select Company:</label>
+      <select class="form-control" id="sel1">
+        <option value="all">Todos</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+
+    <div class="form-group col-2">
+      <label for="sel1">Select User:</label>
+      <select class="form-control" id="sel1">
+        <option value="all">Todos</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>
+    </div>
+
+    <div class="form-group col-2">
+      <label for="sel1">Intervalo Tiempo:</label>
+      <input class="form-control" name="filterIntervaloTiempo" id="intervalo_tiempo" type="text" placeholder="Ingresar Tiempo..">
+
+    </div>
+    <div class="form-group col-4">
+
+          <label for="sel1">Rango de Fechas:</label>
+          <div class="flex-row d-flex justify-content-center">
+
+              <div class="input-group input-daterange">
+
+                <input type="text" id="start" class="form-control" placeholder="Start..">
+                <span class="fa fa-calendar" id="fa-1"></span>
+                <span>  &nbsp;&nbsp;&&nbsp;&nbsp;    </span>
+                <input type="text" id="end" class="form-control" placeholder="End..">
+                <span class="fa fa-calendar" id="fa-2"></span>
+
+              </div>
+
+          </div>
+
+
+    </div>
+
+    <div class="form-group col-2">
+      <button type="button" class="btn btn-success">Aplicar</button>
+    </div>
+
+
+
+  </div>
+
+  <br>
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
