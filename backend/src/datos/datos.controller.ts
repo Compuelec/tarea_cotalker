@@ -1,36 +1,11 @@
 import { Controller, Get, Res, HttpStatus, Param, Query } from '@nestjs/common';
 import { Response } from 'express';
-
-export interface Datos_Lista {
-  CompanyId:number;
-  UserId:number;
-  Method:string;
-  Tiempo:number;
-  Fecha:Date;
-  Source:string;
-}
+import { DataService } from './datos.service';
 
 @Controller('datos')
 export class DatosController {
 
-     @Get()
-     async postDatos(@Res() res: Response){
-      const csv = require('csv-parser')
-      const fs = require('fs')
-      const results = [];
-      //fs.createReadStream('src/log.practica.2.csv')
-      let csvstream = fs.createReadStream('src/prueba.csv')
-      .pipe(csv({headers:['CompanyId', 'UserId', 'Method', 'Tiempo', 'Fecha', 'Source']}))
-      .on('error', error => console.error(error))
-      .on('data', function (data: any) {
-            csvstream.pause();
-            csvstream.resume();
-            results.push(data)
-        })
-      .on('end', () => res.status(HttpStatus.OK).json(results))
-    }
-
-    @Get('/tiempo?:number')
+  @Get('/tiempo?:number')
     async postDatos_tiempo(@Res() res: Response, @Query('number') number){
 
       const csv = require('csv-parser')
@@ -48,72 +23,27 @@ export class DatosController {
 
     }
 
-    @Get('/company?:number')
-    async postDatos_company(@Res() res: Response, @Query('number') number){
+  constructor(
+      private readonly dataService: DataService
+  ){}
 
-      const csv = require('csv-parser')
-      const fs = require('fs')
-      const results = [];
-      //fs.createReadStream('src/log.practica.2.csv')
-      let csvstream = await fs.createReadStream('src/prueba.csv')
-      .pipe(csv({headers:['CompanyId', 'UserId', 'Method', 'Tiempo', 'Fecha', 'Source']}))
-      .on('error', error => console.error(error))
-      .on('data', function (data: any) {
-            csvstream.pause();
-            csvstream.resume();
-            results.push(data)
-        })
-      .on('end', () => res.status(HttpStatus.OK).json(
-       results.filter(data => data['CompanyId'] == number)
+  @Get('filtros/id_Co/:id_Co/id_Us/:id_Us/fechas/:fechas/int_v/:int_v')
+  async getMany(
+      @Param('id_Co') id_Co:number,
+      @Param('id_Us') id_Us:number,
+      @Param('fechas') fechas: string,
+      @Param('int_v') int_v:number
 
-      ))
+  ){
 
-    }
-
-    @Get('/user?:number')
-    async postDatos_user(@Res() res: Response, @Query('number') number){
-
-      const csv = require('csv-parser')
-      const fs = require('fs')
-      const results = [];
-      //fs.createReadStream('src/log.practica.2.csv')
-      let csvstream = await fs.createReadStream('src/prueba.csv')
-      .pipe(csv({headers:['CompanyId', 'UserId', 'Method', 'Tiempo', 'Fecha', 'Source']}))
-      .on('error', error => console.error(error))
-      .on('data', function (data: any) {
-            csvstream.pause();
-            csvstream.resume();
-            results.push(data)
-        })
-      .on('end', () => res.status(HttpStatus.OK).json(
-       results.filter(data => data['UserId'] == number)
-      ))
-
-    }
-
-    @Get('/prueba')
-    async postDatos_prueba(){
-    const csv = require('csv-parser')
-    const fs = require('fs')
-    const results = [];
-    let csvstream = fs.createReadStream('src/prueba.csv')
-        .pipe(csv({headers:['CompanyId', 'UserId', 'Method', 'Tiempo', 'Fecha', 'Source']}))
-        .on('error', error => console.error(error))
-        .on("data", function (row) {
-            csvstream.pause();
-            csvstream.resume();
-            results.push(row)
-        })
-        .on("end", function () {
-            console.log(results)
-        })
-        .on("error", function (error) {
-            console.log(error)
-        });
-
-
-    }
+      const [eventos_users,usuarios] = await this.dataService.getFilter(id_Co,id_Us,fechas,int_v)
+      return {
+          eventos_users,
+          usuarios
+      }
+  }
 
 
 
 }
+

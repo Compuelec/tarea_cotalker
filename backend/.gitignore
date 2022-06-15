@@ -33,5 +33,4 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-src/codigo_prueba.txt
 src/log.practica.2.csv
