@@ -1,25 +1,28 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BodyComponent } from './components/body/body.component';
 import { LineaComponent } from './components/linea/linea.component';
-import { NgChartsModule } from 'ng2-charts';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ChartsModule } from 'ng2-charts';
+
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LineaComponent,
+    BodyComponent
   ],
   imports: [
     BrowserModule,
-    NgbModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgChartsModule
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

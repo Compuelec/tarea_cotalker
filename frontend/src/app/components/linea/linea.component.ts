@@ -1,135 +1,102 @@
-import { Component, ViewChild } from '@angular/core';
-import { ChartConfiguration, ChartEvent, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http'
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Color, Label } from 'ng2-charts';
+
+
+interface Variables_t{
+  eventos_users:{
+      [fecha: string]: number
+  },
+  usuarios:{}
+}
 
 @Component({
-  selector: 'app-linea',
+  selector: 'app-grafico',
   templateUrl: './linea.component.html',
   styleUrls: ['./linea.component.css']
 })
 
-export class LineaComponent {
+export class LineaComponent implements OnInit {
+  /* Variables del Formulario inicial*/
+  idCompForm = new FormControl('1');
+  idUserForm= new FormControl('-1');
+  fAntForm= new FormControl('2017-01-01')
+  fActForm= new FormControl('2018-01-01')
+  interForm= new FormControl(15)
 
-  public lineChartData: ChartConfiguration['data'] = {
-    datasets: [
-      {
-        data: [ 65, 59, 80, 81, 56, 55, 40 ],
-        label: 'Series A',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
-      },
-      {
-        data: [ 28, 48, 40, 19, 86, 27, 90 ],
-        label: 'Series B',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
-        fill: 'origin',
-      },
-      {
-        data: [ 180, 480, 770, 90, 1000, 270, 400 ],
-        label: 'Series C',
-        yAxisID: 'y-axis-1',
+  /* Variables de Datos */
+  usuarios = [''];
+
+  /* Variables de vizualización */
+  mostrarGrafico = false
+  mostrarOpcion = false
+  mostrarLoading = false
+
+  /* Variables del Grafico */
+  lineChartData: ChartDataSets[]=[
+    {data:[]}
+  ]
+  lineChartLabels: Label[]=[]
+  lineChartOptions: ChartOptions = {
+    responsive: true,
+  }
+  lineChartColors: Color[] = [
+    {
+
         backgroundColor: 'rgba(255,0,0,0.3)',
         borderColor: 'red',
         pointBackgroundColor: 'rgba(148,159,177,1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
-      }
-    ],
-    labels: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July' ]
-  };
-
-  public lineChartOptions: ChartConfiguration['options'] = {
-    elements: {
-      line: {
-        tension: 0.5
-      }
-    },
-    scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
-      x: {},
-      'y-axis-0':
-        {
-          position: 'left',
-        },
-      'y-axis-1': {
-        position: 'right',
-        grid: {
-          color: 'rgba(255,0,0,0.3)',
-        },
-        ticks: {
-          color: 'red'
-        }
-      }
-    },
+     
 
 
-  };
-
-  public lineChartType: ChartType = 'line';
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  private static generateNumber(i: number): number {
-    return Math.floor((Math.random() * (i < 2 ? 100 : 1000)) + 1);
-  }
-
-  public randomize(): void {
-    for (let i = 0; i < this.lineChartData.datasets.length; i++) {
-      for (let j = 0; j < this.lineChartData.datasets[i].data.length; j++) {
-        this.lineChartData.datasets[i].data[j] = LineaComponent.generateNumber(i);
-      }
     }
-    this.chart?.update();
+  ]
+  lineChartLegend = true;
+  lineChartType: ChartType = 'line';
+  lineChartPlugins =[];
+  
+  
+  constructor(
+    private httpClient: HttpClient
+  ) {
+    this.idCompForm.valueChanges.pipe().subscribe(()=>{
+      this.idUserForm = new FormControl('-1');
+      this.usuarios=['-1'];
+      this.mostrarOpcion=false
+    })
   }
 
-  // events
-  public chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
+  ngOnInit(): void {
   }
 
-  public chartHovered({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
+  async seach(){
+    this.mostrarGrafico = false
+    this.mostrarLoading = true
+    const url = `http://localhost:4100`
+    const solicitud = `/datos/filtros/id_Co/${this.idCompForm.value}/id_Us/${this.idUserForm.value}/fechas/${this.fAntForm.value}_${this.fActForm.value}/int_v/${this.interForm.value}`
+    console.log(url+solicitud)
+    await this.httpClient.get<Variables_t>(url+solicitud)
+    .subscribe(res=>{
+     
+      if(this.idUserForm.value === '-1') this.usuarios = Object.keys(res.usuarios);
+      this.lineChartData=[
+        {data: Object.values(res.eventos_users), label: 'Número de Eventos', hitRadius:0.5}
+      ]
+      this.lineChartLabels= Object.keys(res.eventos_users)
+      this.mostrarGrafico=true
+      this.mostrarOpcion=true
+      this.mostrarLoading = false
+
+    })
   }
 
-  public hideOne(): void {
-    const isHidden = this.chart?.isDatasetHidden(1);
-    this.chart?.hideDataset(1, !isHidden);
-  }
+  
 
-  public pushOne(): void {
-    this.lineChartData.datasets.forEach((x, i) => {
-      const num = LineaComponent.generateNumber(i);
-      x.data.push(num);
-    });
-    this.lineChartData?.labels?.push(`Label ${ this.lineChartData.labels.length }`);
+  
 
-    this.chart?.update();
-  }
-
-  public changeColor(): void {
-    this.lineChartData.datasets[2].borderColor = 'green';
-    this.lineChartData.datasets[2].backgroundColor = `rgba(0, 255, 0, 0.3)`;
-
-    this.chart?.update();
-  }
-
-  public changeLabel(): void {
-    if (this.lineChartData.labels) {
-      this.lineChartData.labels[2] = [ '1st Line', '2nd Line' ];
-    }
-
-    this.chart?.update();
-  }
 }
