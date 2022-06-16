@@ -21,20 +21,19 @@ interface Variables_t{
 export class LineaComponent implements OnInit {
   /* Variables del Formulario inicial*/
   idCompForm = new FormControl('1');
-  idUserForm= new FormControl('-1');
-  fAntForm= new FormControl('2017-01-01')
-  fActForm= new FormControl('2018-01-01')
-  interForm= new FormControl(15)
+  idUserForm = new FormControl('-1');
+  fAntForm = new FormControl('2017-01-01')
+  fActForm = new FormControl('2018-01-01')
+  interForm = new FormControl(15)
 
-  /* Variables de Datos */
+// Variables de Datos
   usuarios = [''];
 
-  /* Variables de vizualización */
+  // Variables de vizualización Grafico y Loading
   mostrarGrafico = false
-  mostrarOpcion = false
   mostrarLoading = false
 
-  /* Variables del Grafico */
+  // Variables del Grafico
   lineChartData: ChartDataSets[]=[
     {data:[]}
   ]
@@ -44,22 +43,17 @@ export class LineaComponent implements OnInit {
   }
   lineChartColors: Color[] = [
     {
-
         backgroundColor: 'rgba(255,0,0,0.3)',
         borderColor: 'red',
         pointBackgroundColor: 'rgba(148,159,177,1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-     
-
-
     }
   ]
   lineChartLegend = true;
   lineChartType: ChartType = 'line';
   lineChartPlugins =[];
-  
   
   constructor(
     private httpClient: HttpClient
@@ -67,12 +61,10 @@ export class LineaComponent implements OnInit {
     this.idCompForm.valueChanges.pipe().subscribe(()=>{
       this.idUserForm = new FormControl('-1');
       this.usuarios=['-1'];
-      this.mostrarOpcion=false
     })
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   async seach(){
     this.mostrarGrafico = false
@@ -82,21 +74,13 @@ export class LineaComponent implements OnInit {
     console.log(url+solicitud)
     await this.httpClient.get<Variables_t>(url+solicitud)
     .subscribe(res=>{
-     
       if(this.idUserForm.value === '-1') this.usuarios = Object.keys(res.usuarios);
       this.lineChartData=[
         {data: Object.values(res.eventos_users), label: 'Número de Eventos', hitRadius:0.5}
       ]
       this.lineChartLabels= Object.keys(res.eventos_users)
-      this.mostrarGrafico=true
-      this.mostrarOpcion=true
+      this.mostrarGrafico = true
       this.mostrarLoading = false
-
     })
   }
-
-  
-
-  
-
 }

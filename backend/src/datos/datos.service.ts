@@ -19,22 +19,19 @@ export class DataService {
        for await (const line of readInterface){
            const [companyId,userId,method,tiempo,date,source] = line.split(',') // recorro linea por linea y los datos
            const [fecha] = date.split('T') // divido la fecha de la hora
-           // se toma en cuenta un intervalo
-           if(fecha < f_Inicio){ 
-               continue
-           }
-            //Si la fecha es menor no te toma en cuenta 
-           if(fecha > f_Final){
-            break
-           }
-           // Filtros para la consulta
+
+           //  INICIO DE FILTROS Y EVITAR CARGA 
+
+           if(fecha < f_Inicio){ continue } // Si la fecha es menor a la fecha de inicio, la ignora y pasa a la linea siguiente
+           if(fecha > f_Final){ break } // Si la fecha que viene es mayor a la fecha final detiene el proceso
+           
            // Reviso compañia solicitada && Reviso usuario solicitado
            if(isCompany(id_Com.toString(),companyId) && isUser(id_Usr.toString(),userId)){
                if(!lastUser[userId]){ // Si el usuario no tiene solicitudes previas
                     lastUser[userId] = date;
                     // registro un evento a la fecha
                     if(!eventFecha[fecha]){
-                         eventFecha[fecha] = 1 ;
+                        eventFecha[fecha] = 1 ;
                      } 
                     else {
                         eventFecha[fecha] = eventFecha[fecha] + 1 ;
@@ -53,9 +50,7 @@ export class DataService {
        //console.log(eventFecha) // Verifico los eventos que el usuario tiene por fecha
        //console.log(lastUser) // Ultima conexion del usuario
        return [eventFecha,lastUser]   
-        
     }
-    
 }
 
 function isCompany(id_C1:string,id_C2:string){
