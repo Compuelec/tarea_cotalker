@@ -38,8 +38,14 @@ export class DataService {
                     } 
                }
                else{ 
+                // MUESTRA DE COMO LLEGAN LOS DATOS
+                //eventFecha: 4
+                //lastUser:  2017-12-31T18:06:09.994+0000
+                //Date:  2017-12-31T18:06:11.716+0000
+                //Intervalo:  15
                    // Se compara la solicitud con la ultima del usuario para ver si es parte el intervalo
                    if(!intervalActive(lastUser[userId],date,interval)) {
+                    //console.log(lastUser)
                     lastUser[userId] = date;  // se cambia la ultima solicitud del usuario
                     if(!eventFecha[fecha]) eventFecha[fecha] = 1;
                     else eventFecha[fecha] = eventFecha[fecha] + 1 ;   
@@ -49,16 +55,18 @@ export class DataService {
        }
        //console.log(eventFecha) // Verifico los eventos que el usuario tiene por fecha
        //console.log(lastUser) // Ultima conexion del usuario
-       return [eventFecha,lastUser]   
+
+       
+       return [eventFecha,lastUser]
     }
 }
 
 function isCompany(id_C1:string,id_C2:string){
   if(id_C1 === '-1' ){
-   return true;
+   return true; // Cuando esta condicion de cumple trae a todas las compañias
   }
   if(id_C1 === id_C2){
-   return true;
+   return true; // Cuando esta se cumple trae a la compañia especifica 
   }
   return false
 }
@@ -73,7 +81,7 @@ function isUser(id_U1:string, id_U2:string){
   return false
 
 }
-
+   //2017-12-31 T 18:06:09 .994+0000
  function intervalActive(fechaAnterior:string, fechaActual:string,interval){
   const [fechaAn,horaAn]= fechaAnterior.split('.')[0].split('T') // Separo fecha y Hora
   const [hAn,mAn,sAn] = horaAn.split(':') // Separo Hora en Hora, Minuto, Segundo
@@ -85,7 +93,7 @@ function isUser(id_U1:string, id_U2:string){
   if(fechaAc !== fechaAn){ // Si hay diferencia de 1 dia en fecha para el intervalo
       segAc = Number(hAc+24)*3600 + Number(mAc)*60 + Number(sAc)
   }
-  if((segAc-segAn) <= interval*60  ){ // Si diferencia de segundos esta en el intervalo significa que es intervalo activo
+  if((segAc-segAn) <= interval*60  ){ // Si la resta da menos o = que segundos de intervalos, significa que es intervalo activo
       return true // SI es parte del intervalo
   }
   return false // No es parte del intervalo 

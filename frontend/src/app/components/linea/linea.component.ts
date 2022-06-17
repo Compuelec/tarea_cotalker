@@ -9,7 +9,7 @@ interface Variables_t{
   eventos_users:{
       [fecha: string]: number
   },
-  usuarios:{}
+  usuarios:{ }
 }
 
 @Component({
